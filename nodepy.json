@@ -1,0 +1,10 @@
+{
+  "name": "@NiklasRosenstein/git-timetrack",
+  "version": "1.0.0",
+  "license": "MIT",
+  "main": "git_timetrack/main.py",
+  "resolve_root": "git_timetrack",
+  "bin": {
+    "git-timetrack": "git_timetrack/main.py"
+  }
+}
