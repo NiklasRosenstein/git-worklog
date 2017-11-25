@@ -41,15 +41,19 @@ def makedirs(path):
   if not os.path.isdir(path):
     os.makedirs(path)
 
+
 def now():
   tz = timezone(timedelta(hours=-time.timezone/3600))
   return datetime.now().replace(tzinfo=tz)
 
+
 def strftime(time, fmt=None):
   return time.strftime(fmt or time_fmt)
 
+
 def strptime(value, fmt=None):
   return datetime.strptime(value, fmt or time_fmt)
+
 
 def splittimedelta(tdelta, components='DHMS'):
   l = {'D': 86400, 'H': 3600, 'M': 60, 'S': 1}
@@ -59,6 +63,7 @@ def splittimedelta(tdelta, components='DHMS'):
     d, rem = divmod(rem, l[k])
     r.append(d)
   return r
+
 
 def parse_time(value):
   """
@@ -83,11 +88,14 @@ def parse_time(value):
       pass
   raise ValueError('invalid time string: {!r}'.format(value))
 
+
 class NoCheckinAvailable(Exception):
   pass
 
+
 def get_checkin_file(fatal=True):
   return os.path.join(git.dir(fatal=fatal), 'timetable', 'checkin')
+
 
 def set_checkin(name, time=None):
   time = time or now()
@@ -96,6 +104,7 @@ def set_checkin(name, time=None):
   with open(filename, 'w') as fp:
     fp.write('{}\n{}\n'.format(name, strftime(time)))
   return CheckinData(name, time)
+
 
 def get_checkin():
   filename = get_checkin_file()
@@ -109,6 +118,7 @@ def get_checkin():
       raise ValueError('invalid check-in file at {!r}'.format(filename))
   return CheckinData(name, time)
 
+
 def rem_checkin():
   filename = get_checkin_file()
   try:
@@ -116,6 +126,7 @@ def rem_checkin():
   except OSError as exc:
     if exc.errno != errno.ENOENT:
       raise
+
 
 def add_checkout(name, begin, end, message=None):
   interval = end - begin
