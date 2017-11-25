@@ -1,23 +1,23 @@
-## git-timetrack
+## git-worklog
 
-Track work times in the `timetracking` branch or in a separate repository.
+Track work times in the `worklog` branch or in a separate repository.
 
 ### Configuration
 
-* `timetrack.repository` &ndash; If specified, must point to a Git repository
-  on the filesystem. The `timetracking.project` option is required when this
+* `worklog.repository` &ndash; If specified, must point to a Git repository
+  on the filesystem. The `workworklog.project` option is required when this
   option is set. Usually, this option is defined in your global
   `~/.gitconfig` file.
-* `timetrack.project` &ndash; Defines the name of the branch that the work log
-  is committed to. This is only used when `timetrack.repository` is set.
-* `timetrack.branch` &ndash; Defines the name of the branch that the work log
-  is commited to. This is only used when `timetrack.repository` is *not* set.
-  The default for this option is `timetracking`.
+* `worklog.project` &ndash; Defines the name of the branch that the work log
+  is committed to. This is only used when `worklog.repository` is set.
+* `worklog.branch` &ndash; Defines the name of the branch that the work log
+  is commited to. This is only used when `worklog.repository` is *not* set.
+  The default for this option is `worklog`.
 
 ### Synopsis
 
 ```
-usage: git-timetrack abort [-h]
+usage: git-worklog abort [-h]
 
 Abort the current session.
 
@@ -26,9 +26,9 @@ optional arguments:
 ```
 
 ```
-usage: git-timetrack [-h] {checkin,checkout,show,status} ...
+usage: git-worklog [-h] {checkin,checkout,show,status} ...
 
-Allows you to track working times in a separate `timetracking` branch.
+Allows you to track working times in a separate `worklog` branch.
 
 positional arguments:
   {checkin,checkout,show,status}
@@ -38,7 +38,7 @@ optional arguments:
 ```
 
 ```
-usage: git-timetrack checkin [-h] [--time TIME]
+usage: git-worklog checkin [-h] [--time TIME]
 
 Checks you in to start a local time-tracking session.
 
@@ -48,7 +48,7 @@ optional arguments:
 ```
 
 ```
-usage: git-timetrack checkpoint [-h] [-m MESSAGE] [--time TIME]
+usage: git-worklog checkpoint [-h] [-m MESSAGE] [--time TIME]
 
 Commit a new log from the current session and start a new one.
 
@@ -60,9 +60,9 @@ optional arguments:
 ```
 
 ```
-usage: git-timetrack checkout [-h] [-m MESSAGE] [--time TIME]
+usage: git-worklog checkout [-h] [-m MESSAGE] [--time TIME]
 
-Checks you out an adds an entry to your timetable file in the timetracking
+Checks you out an adds an entry to your timetable file in the worklog
 branch.
 
 optional arguments:
@@ -73,7 +73,7 @@ optional arguments:
 ```
 
 ```
-usage: git-timetrack show [-h] [--user USER]
+usage: git-worklog show [-h] [--user USER]
 
 Prints your timetable (or that of the specified user). The timetable is a TSV
 file with the three columns CHECKINTIME, CHECKOUTTIME and MESSAGE. All times
@@ -85,7 +85,7 @@ optional arguments:
 ```
 
 ```
-usage: git-timetrack status [-h]
+usage: git-worklog status [-h]
 
 Displays your current session, that is the time passed since checkin or
 otherwise that there is no active time-tracking session.

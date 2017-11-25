@@ -31,8 +31,8 @@ else:
   from . import git, timetable
 
 
-parser = argparse.ArgumentParser(prog='git-timetrack', description="""
-  Allows you to track working times in a separate `timetracking` branch.
+parser = argparse.ArgumentParser(prog='git-worklog', description="""
+  Allows you to track working times in a separate `worklog` branch.
 """)
 subparsers = parser.add_subparsers(dest='command')
 
@@ -49,14 +49,16 @@ checkpoint_parser = subparsers.add_parser('checkpoint', description="""
   Commit a new log from the current session and start a new one.
 """)
 checkpoint_parser.add_argument('-m', '--message', help='A message for the log.')
-checkpoint_parser.add_argument('--time', type=timetable.parse_time, help='Override check-out and new check-in time.')
+checkpoint_parser.add_argument('--time', type=timetable.parse_time,
+  help='Override check-out and new check-in time.')
 
 checkout_parser = subparsers.add_parser('checkout', description="""
-  Checks you out an adds an entry to your timetable file in the timetracking
+  Checks you out an adds an entry to your timetable file in the worklog
   branch.
 """)
 checkout_parser.add_argument('-m', '--message', help='A message for the log.')
-checkout_parser.add_argument('--time', type=timetable.parse_time, help='Override check-out time.')
+checkout_parser.add_argument('--time', type=timetable.parse_time,
+  help='Override check-out time.')
 
 show_parser = subparsers.add_parser('show', description="""
   Prints your timetable (or that of the specified user). The timetable is a
@@ -138,8 +140,8 @@ def show(user):
 def status(detail):
   if detail:
     repo, branch = timetable.get_commit_repo_and_branch()
-    print('Timetrack repository:', repo)
-    print('Work log branch:     ', branch)
+    print('Worklog repository:', repo)
+    print('Worklog branch:     ', branch)
   try:
     data = timetable.get_checkin()
   except timetable.NoCheckinAvailable:

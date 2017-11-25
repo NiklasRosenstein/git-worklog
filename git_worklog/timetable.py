@@ -30,7 +30,7 @@ if 'require' in globals():
 else:
   from . import git
 
-BRANCH = 'timetracking'
+BRANCH = 'worklog'
 now = datetime.now
 time_fmt = '%d/%b/%Y:%H:%M:%S %z'
 CheckinData = namedtuple('CheckinData', 'name time')
@@ -94,24 +94,24 @@ class NoCheckinAvailable(Exception):
 
 
 def get_checkin_file(fatal=True):
-  return os.path.join(git.dir(fatal=fatal), 'timetable', 'checkin')
+  return os.path.join(git.dir(fatal=fatal), 'worklog', 'checkin')
 
 
 def get_commit_repo_and_branch():
   # Check if we should check-in to a different repository.
-  target_repo = git.config('timetrack.repository')
+  target_repo = git.config('worklog.repository')
   if target_repo:
     if not os.path.isdir(target_repo):
-      print('fatal: timetrack.repository={}'.format(target_repo), file=sys.stderr)
+      print('fatal: worklog.repository={}'.format(target_repo), file=sys.stderr)
       print('       the specified directory does not exist.')
       sys.exit(128)
-    target_branch = git.config('timetrack.project')
+    target_branch = git.config('worklog.project')
     if not target_branch:
-      print('fatal: timetrack.repository is set but timetrack.project is not', file=sys.stderr)
-      print('       please do `git config timetrack.project <projectname>` first', file=sys.stderr)
+      print('fatal: worklog.repository is set but worklog.project is not', file=sys.stderr)
+      print('       please do `git config worklog.project <projectname>` first', file=sys.stderr)
       sys.exit(128)
   else:
-    target_branch = git.config('timetrack.branch') or BRANCH
+    target_branch = git.config('worklog.branch') or BRANCH
   return target_repo or git.dir(fatal=True), target_branch
 
 
