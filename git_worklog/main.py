@@ -140,8 +140,11 @@ def show(user):
 def status(detail):
   if detail:
     repo, branch = timetable.get_commit_repo_and_branch()
-    print('Worklog repository:', repo)
-    print('Worklog branch:     ', branch)
+    if repo:
+      print('Worklog repository:', repo)
+      print('Worklog branch:    ', branch)
+    elif branch != timetable.BRANCH:
+      print('Worklog branch:    ', branch)
   try:
     data = timetable.get_checkin()
   except timetable.NoCheckinAvailable:

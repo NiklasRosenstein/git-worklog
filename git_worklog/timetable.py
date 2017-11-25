@@ -112,7 +112,7 @@ def get_commit_repo_and_branch():
       sys.exit(128)
   else:
     target_branch = git.config('worklog.branch') or BRANCH
-  return target_repo or git.dir(fatal=True), target_branch
+  return target_repo or None, target_branch
 
 
 def set_checkin(name, time=None):
