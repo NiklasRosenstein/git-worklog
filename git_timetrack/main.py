@@ -69,6 +69,7 @@ status_parser = subparsers.add_parser('status', description="""
   Displays your current session, that is the time passed since checkin or
   otherwise that there is no active time-tracking session.
 """)
+status_parser.add_argument('-d', '--detail', action='store_true')
 
 
 def print_err(*message):
@@ -134,17 +135,21 @@ def show(user):
     return 1
 
 
-def status():
+def status(detail):
+  if detail:
+    repo, branch = timetable.get_commit_repo_and_branch()
+    print('Timetrack repository:', repo)
+    print('Work log branch:     ', branch)
   try:
     data = timetable.get_checkin()
   except timetable.NoCheckinAvailable:
-    print('not checked in.')
+    print('not checked-in.')
   else:
     h, m, s = timetable.splittimedelta(timetable.now() - data.time, 'HMS')
     info = '{} seconds'.format(s)
     if m > 0: info = '{} minutes and {}'.format(m, info)
     if h > 0: info = '{} hours, {}'.format(h, info)
-    print('{} at {} (since {})'.format(data.name,
+    print('{} checked in at {} (since {})'.format(data.name,
         timetable.strftime(data.time), info))
 
 
@@ -166,7 +171,7 @@ def main(argv=None):
   elif args.command == 'show':
     return show(args.user)
   elif args.command == 'status':
-    return status()
+    return status(args.detail)
   else:
     print('fatal: invalid command {}'.format(args.command), file=sys.stderr)
     return 128

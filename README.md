@@ -92,4 +92,5 @@ otherwise that there is no active time-tracking session.
 
 optional arguments:
   -h, --help  show this help message and exit
+  -d, --detail
 ```
