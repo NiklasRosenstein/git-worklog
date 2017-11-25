@@ -1,6 +1,18 @@
 ## git-timetrack
 
-Track work times in a separate `timetracking` branch.
+Track work times in the `timetracking` branch or in a separate repository.
+
+### Configuration
+
+* `timetrack.repository` &ndash; If specified, must point to a Git repository
+  on the filesystem. The `timetracking.project` option is required when this
+  option is set. Usually, this option is defined in your global
+  `~/.gitconfig` file.
+* `timetrack.project` &ndash; Defines the name of the branch that the work log
+  is committed to. This is only used when `timetrack.repository` is set.
+* `timetrack.branch` &ndash; Defines the name of the branch that the work log
+  is commited to. This is only used when `timetrack.repository` is *not* set.
+  The default for this option is `timetracking`.
 
 ### Synopsis
 
