@@ -52,17 +52,17 @@ checkout_parser = subparsers.add_parser('checkout', description="""
 checkout_parser.add_argument('-m', '--message', help='A message for the log.')
 checkout_parser.add_argument('--time', type=timetable.parse_time, help='Override check-out time.')
 
-status_parser = subparsers.add_parser('status', description="""
-  Displays your current session, that is the time passed since checkin or
-  otherwise that there is no active time-tracking session.
-""")
-
 show_parser = subparsers.add_parser('show', description="""
   Prints your timetable (or that of the specified user). The timetable is a
   TSV file with the three columns CHECKINTIME, CHECKOUTTIME and MESSAGE.
   All times have timezone information attached.
 """)
 show_parser.add_argument('--user', help='User to retrieve the timetable for.')
+
+status_parser = subparsers.add_parser('status', description="""
+  Displays your current session, that is the time passed since checkin or
+  otherwise that there is no active time-tracking session.
+""")
 
 
 def print_err(*message):
@@ -118,6 +118,15 @@ def checkout(message, time):
   print('checked out: {}, interval is {}'.format(checkin.name, str(data.interval)))
 
 
+def show(user):
+  user = user or git.config('user.name')
+  try:
+    print(git.show('{}:{}.tsv'.format(timetable.BRANCH, user)))
+  except git.DoesNotExist as exc:
+    print_err(exc)
+    return 1
+
+
 def status():
   try:
     data = timetable.get_checkin()
@@ -130,15 +139,6 @@ def status():
     if h > 0: info = '{} hours, {}'.format(h, info)
     print('{} at {} (since {})'.format(data.name,
         timetable.strftime(data.time), info))
-
-
-def show(user):
-  user = user or git.config('user.name')
-  try:
-    print(git.show('{}:{}.tsv'.format(timetable.BRANCH, user)))
-  except git.DoesNotExist as exc:
-    print_err(exc)
-    return 1
 
 
 def main(argv=None):
