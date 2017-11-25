@@ -100,7 +100,7 @@ def get_checkin_file(fatal=True):
 def get_commit_repo_and_branch():
   # Check if we should check-in to a different repository.
   target_repo = git.config('timetrack.repository')
-  if target_repo is not None:
+  if target_repo:
     if not os.path.isdir(target_repo):
       print('fatal: timetrack.repository={}'.format(target_repo), file=sys.stderr)
       print('       the specified directory does not exist.')
@@ -112,7 +112,7 @@ def get_commit_repo_and_branch():
       sys.exit(128)
   else:
     target_branch = git.config('timetrack.branch') or BRANCH
-  return target_repo or git.dir(True), target_branch
+  return target_repo or git.dir(fatal=True), target_branch
 
 
 def set_checkin(name, time=None):
