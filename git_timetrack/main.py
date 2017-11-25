@@ -36,6 +36,10 @@ parser = argparse.ArgumentParser(prog='git-timetrack', description="""
 """)
 subparsers = parser.add_subparsers(dest='command')
 
+abort_parser = subparsers.add_parser('abort', description="""
+  Abort the current session.
+""")
+
 checkin_parser = subparsers.add_parser('checkin', description="""
   Checks you in to start a local time-tracking session.
 """)
@@ -63,6 +67,18 @@ show_parser.add_argument('--user', help='User to retrieve the timetable for.')
 
 def print_err(*message):
   print(*message, file=sys.stderr)
+
+
+def abort():
+  try:
+    data = timetable.get_checkin()
+  except timetable.NoCheckinAvailable:
+    print_err('fatal: not checked-in')
+    return 1
+
+  timetable.rem_checkin()
+  print('Aborted session for', data.name)
+  print('Checked in at', timetable.strftime(data.time))
 
 
 def checkin(time):
@@ -130,6 +146,8 @@ def main(argv=None):
   if not args.command:
     parser.print_usage()
     return 0
+  elif args.command == 'abort':
+    return abort()
   elif args.command == 'checkin':
     return checkin(args.time)
   elif args.command == 'checkout':
