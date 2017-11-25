@@ -1,6 +1,6 @@
 {
   "name": "@NiklasRosenstein/git-worklog",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "license": "MIT",
   "main": "git_worklog/main.py",
   "resolve_root": "git_worklog",

@@ -1,7 +1,7 @@
 from setuptools import setup
 setup(
   name='git-worklog',
-  version='1.0.1',
+  version='1.0.3',
   license='MIT',
   description='Track work times in a separate worklog branch.',
   url='https://github.com/NiklasRosenstein/git-worklog',
