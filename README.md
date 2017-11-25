@@ -5,6 +5,15 @@ Track work times in a separate `timetracking` branch.
 ### Synopsis
 
 ```
+usage: git-timetrack abort [-h]
+
+Abort the current session.
+
+optional arguments:
+  -h, --help  show this help message and exit
+```
+
+```
 usage: git-timetrack [-h] {checkin,checkout,show,status} ...
 
 Allows you to track working times in a separate `timetracking` branch.
@@ -27,6 +36,18 @@ optional arguments:
 ```
 
 ```
+usage: git-timetrack checkpoint [-h] [-m MESSAGE] [--time TIME]
+
+Commit a new log from the current session and start a new one.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -m MESSAGE, --message MESSAGE
+                        A message for the log.
+  --time TIME           Override check-out and new check-in time.
+```
+
+```
 usage: git-timetrack checkout [-h] [-m MESSAGE] [--time TIME]
 
 Checks you out an adds an entry to your timetable file in the timetracking
@@ -40,16 +61,6 @@ optional arguments:
 ```
 
 ```
-usage: git-timetrack status [-h]
-
-Displays your current session, that is the time passed since checkin or
-otherwise that there is no active time-tracking session.
-
-optional arguments:
-  -h, --help  show this help message and exit
-```
-
-```
 usage: git-timetrack show [-h] [--user USER]
 
 Prints your timetable (or that of the specified user). The timetable is a TSV
@@ -59,4 +70,14 @@ have timezone information attached.
 optional arguments:
   -h, --help   show this help message and exit
   --user USER  User to retrieve the timetable for.
+```
+
+```
+usage: git-timetrack status [-h]
+
+Displays your current session, that is the time passed since checkin or
+otherwise that there is no active time-tracking session.
+
+optional arguments:
+  -h, --help  show this help message and exit
 ```
