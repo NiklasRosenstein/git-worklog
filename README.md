@@ -17,15 +17,6 @@ Track work times in the `worklog` branch or in a separate repository.
 ### Synopsis
 
 ```
-usage: git-worklog abort [-h]
-
-Abort the current session.
-
-optional arguments:
-  -h, --help  show this help message and exit
-```
-
-```
 usage: git-worklog [-h] {checkin,checkout,show,status} ...
 
 Allows you to track working times in a separate `worklog` branch.
@@ -35,6 +26,15 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
+```
+
+```
+usage: git-worklog abort [-h]
+
+Abort the current session.
+
+optional arguments:
+  -h, --help  show this help message and exit
 ```
 
 ```
