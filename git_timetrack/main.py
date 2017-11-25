@@ -45,6 +45,12 @@ checkin_parser = subparsers.add_parser('checkin', description="""
 """)
 checkin_parser.add_argument('--time', type=timetable.parse_time, help='Override check-in time.')
 
+checkpoint_parser = subparsers.add_parser('checkpoint', description="""
+  Commit a new log from the current session and start a new one.
+""")
+checkpoint_parser.add_argument('-m', '--message', help='A message for the log.')
+checkpoint_parser.add_argument('--time', type=timetable.parse_time, help='Override check-out and new check-in time.')
+
 checkout_parser = subparsers.add_parser('checkout', description="""
   Checks you out an adds an entry to your timetable file in the timetracking
   branch.
@@ -149,6 +155,10 @@ def main(argv=None):
   elif args.command == 'abort':
     return abort()
   elif args.command == 'checkin':
+    return checkin(args.time)
+  elif args.command == 'checkpoint':
+    res = checkout(args.message, args.time)
+    if res not in (0, None): return res
     return checkin(args.time)
   elif args.command == 'checkout':
     return checkout(args.message, args.time)
