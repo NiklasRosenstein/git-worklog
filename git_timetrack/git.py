@@ -160,9 +160,9 @@ def config(key, value=None, g=False):
     raise
 
 
-def show(*args):
+def show(*args, cwd=None):
   try:
-    return dec(run(['git', 'show'] + list(args)).out).strip()
+    return dec(run(['git', 'show'] + list(args), cwd=cwd).out).strip()
   except CalledProcessError as exc:
     if exc.returncode == 128:
       raise DoesNotExist(dec(exc.output))
@@ -187,14 +187,14 @@ def rev_parse(*args):
     raise
 
 
-def fast_import(commit, date_format=None, quiet=False):
+def fast_import(commit, date_format=None, quiet=False, cwd=None):
   cmd = ['git', 'fast-import']
   if date_format:
     cmd.append('--date-format=' + date_format)
   if quiet:
     cmd.append('--quiet')
   try:
-    return run(cmd, input=commit)
+    return run(cmd, input=commit, cwd=cwd)
   except CalledProcessError as exc:
     raise
 

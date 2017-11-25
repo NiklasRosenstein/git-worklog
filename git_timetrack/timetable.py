@@ -97,6 +97,24 @@ def get_checkin_file(fatal=True):
   return os.path.join(git.dir(fatal=fatal), 'timetable', 'checkin')
 
 
+def get_commit_repo_and_branch():
+  # Check if we should check-in to a different repository.
+  target_repo = git.config('timetracking.repository')
+  if target_repo is not None:
+    if not os.path.isdir(target_repo):
+      print('fatal: timetracking.repository={}'.format(target_repo), file=sys.stderr)
+      print('       the specified directory does not exist.')
+      sys.exit(128)
+    target_branch = git.config('timetracking.project')
+    if not target_branch:
+      print('fatal: timetracking.repository is set but timetracking.project is not', file=sys.stderr)
+      print('       please do `git config timetracking.project <projectname>` first', file=sys.stderr)
+      sys.exit(128)
+  else:
+    target_branch = git.config('timetracking.branch') or BRANCH
+  return target_repo or git.dir(True), target_branch
+
+
 def set_checkin(name, time=None):
   time = time or now()
   filename = get_checkin_file()
@@ -133,10 +151,12 @@ def add_checkout(name, begin, end, message=None):
   if not message:
     message = 'Checkout ' + str(interval)
 
+  repo, branch = get_commit_repo_and_branch()
+
   # Read the contents of the timetable file for this user.
   filename = name + '.tsv'
   try:
-    contents = git.show('{}:{}'.format(BRANCH, filename))
+    contents = git.show('{}:{}'.format(branch, filename), cwd=repo)
   except git.DoesNotExist:
     contents = ''
 
@@ -147,8 +167,8 @@ def add_checkout(name, begin, end, message=None):
 
   # Create a commit to add the line to the timetable.
   commit = git.Commit()
-  commit.head(BRANCH, message)
+  commit.head(branch, message)
   commit.add_file_contents(contents, filename)
 
-  git.fast_import(commit.getvalue(), date_format='raw', quiet=True)
+  git.fast_import(commit.getvalue(), date_format='raw', quiet=True, cwd=repo)
   return CheckoutData(name, begin, end, interval, message)

@@ -125,9 +125,10 @@ def checkout(message, time):
 
 
 def show(user):
+  repo, branch = timetable.get_commit_repo_and_branch()
   user = user or git.config('user.name')
   try:
-    print(git.show('{}:{}.tsv'.format(timetable.BRANCH, user)))
+    print(git.show('{}:{}.tsv'.format(branch, user), cwd=repo))
   except git.DoesNotExist as exc:
     print_err(exc)
     return 1
