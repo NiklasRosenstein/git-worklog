@@ -35,6 +35,7 @@ now = datetime.now
 time_fmt = '%d/%b/%Y:%H:%M:%S %z'
 CheckinData = namedtuple('CheckinData', 'name time')
 CheckoutData = namedtuple('CheckoutData', 'name begin end interval message')
+Log = namedtuple('Log', 'begin end message')
 
 
 def makedirs(path):
@@ -63,6 +64,14 @@ def splittimedelta(tdelta, components='DHMS'):
     d, rem = divmod(rem, l[k])
     r.append(d)
   return r
+
+
+def strftimedelta(tdelta, components='DHMS'):
+  parts = []
+  for i, val in enumerate(splittimedelta(tdelta, components)):
+    if val > 0:
+      parts.append('{}{}'.format(val, components[i].lower()))
+  return ', '.join(parts)
 
 
 def parse_time(value, dt=None):
@@ -107,6 +116,20 @@ def parse_time(value, dt=None):
     kwargs['second'] = 0
 
   return result.replace(**kwargs)
+
+
+def parse_sheet(data):
+  """
+  Parses a timetable sheet and returns a list of #Log entries.
+  """
+
+  result = []
+  for line in data.split('\n'):
+    cols = line.split('\t', 3)
+    cols[0] = strptime(cols[0])
+    cols[1] = strptime(cols[1])
+    result.append(Log(*cols))
+  return result
 
 
 class NoCheckinAvailable(Exception):
