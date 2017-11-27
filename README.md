@@ -1,28 +1,110 @@
 ## git-worklog
 
-Track work times in the `worklog` branch or in a separate repository.
+Git-worklog is a minimal, multi-user & Git-based timetracking command-line
+tool. All logs are stored as one file per per user in the `worklog` branch
+of your project.
 
-### Configuration
+__Features__
 
-* `worklog.repository` &ndash; If specified, must point to a Git repository
-  on the filesystem. The `workworklog.project` option is required when this
-  option is set. Usually, this option is defined in your global
-  `~/.gitconfig` file.
-* `worklog.project` &ndash; Defines the name of the branch that the work log
-  is committed to. This is only used when `worklog.repository` is set.
-* `worklog.branch` &ndash; Defines the name of the branch that the work log
-  is commited to. This is only used when `worklog.repository` is *not* set.
-  The default for this option is `worklog`.
+* Easy to use command-line interface
+* Simple data-format allows you to easily parse and process work logs
+* Comes with a plain-text reporting tool with filter options
+* Configurable branch name or even target Git repository
+
+__Configuration__
+
+`worklog.branch` &ndash; The name of the branch that the work logs will be
+saved to. The default value for this option is `worklog`.
+
+`worklog.repository` &ndash; The path to a repository that the work logs
+will be commited to. The `worklog.project` option is used as the branch-name
+for this repository instead of `worklog.branch`.
+
+`worklog.project` &ndash; The name of the branch that the work logs will be
+commited to when an alternative repository is configured.
+
+__Worklog Format__
+
+Work logs are stored per-user in a `.tsv` file. The user's name is derived
+from the Git `user.name` option. Work log files always have three columns:
+
+1. Checkin time
+2. Checkout time
+3. Log message
+
+> Note that the Log message *may* contain additional tabs, so you should stop
+> splitting a row into parts after the first two columns. 
+
+Times are always stored in the format `%d/%b/%Y:%H:%M:%S %z`. In order to
+read the full work log of a user, you can use the `git-worklog show` command,
+or the functional equivalent using `git show`:
+
+    $ git show worklog:"$(git config user.name).tsv"
+
+### CLI Documentation
+
+#### `git worklog abort`
+
+Aborts the current session. A session can be started with `git worklog checkin`.
+
+#### `git worklog checkin`
+
+Starts a new session. The `--user` option can be used to start a session as
+another user. With the `--time` option, you can specify a start time for the
+session that is not the current time.
+
+See also: **Time Formats**
+
+#### `git worklog checkout`
+
+Ends the current session and commits a work log. An alternative checkout time
+can be specified with the `--time` option. A message for the log can be
+defined with the `-m` option. If not message is defined, a default message
+will be generated that says "Checkout &lt;interval&gt;".
+
+See also: **Time Formats**
+
+#### `git worklog checkpoint`
+
+A combination of `git worklog checkout` and `git worklog checkin`. The options
+are the same as for the `git worklog checkout` command.
+
+### `git worklog status`
+
+Displays the current session's user and checkin time, as well as the time
+passed since checkin.
+
+#### `git worklog show`
+
+Shows the full work log for the current user or the user specified with the
+`--user` option. Besides the the default value for the `worklog.branch`
+option and the option to override the user, this is equivalent to the Git
+command
+
+    $ git show "$(git config worklog.branch):$(git config user.name).tsv"
+
+#### `git worklog report`
+
+Generate a report from a user's work log. This command gives you the option
+to filter by a log's checkin and checkout time using the `--begin` and `--end`
+options. With the `--strict` flag, these filters can be narrowed to exclude
+logs that overlap with the specified checkin or checkout time.
+
+By default, a plain-text and human readable summary of the work logs will
+be printed to the console. If the `--raw` flag is specified, the output format
+will match that of `git worklog show` (but it will allow you to apply the
+filters supported by this command).
 
 ### Time Formats
 
-Git-worklog uses `%d/%b/%Y:%H:%M:%S %z` time format in the work log files.
-However, some commands support one or more time options and typing a date in
-the full time format is inconvenient, to say it frankly. Thus, these parameters
-support the following time formats and will fill in the rest with the current
-date and time.
+Typing the full-fletched time format that is used by git-worklog when
+specifying a time value to one of the commands is usually undesirable, thus
+the CLI supports various other time formats and will fill missing information
+with the current day and time information where appropriate.
 
 See also: `git_worklog/timetable.py:parse_time()`
+
+__Supported Time Formats__
 
 * `%H:%M`
 * `%H:%M:%S`
@@ -38,84 +120,3 @@ See also: `git_worklog/timetable.py:parse_time()`
 <sup>(1)</sup> When using this time format, the daytime information will be
 zeroed. Eg. `25/Nov` specifies the 25th of November in the current year at
 0am.
-
-### Synopsis
-
-```
-usage: git-worklog [-h] {checkin,checkout,show,status} ...
-
-Allows you to track working times in a separate `worklog` branch.
-
-positional arguments:
-  {checkin,checkout,show,status}
-
-optional arguments:
-  -h, --help            show this help message and exit
-```
-
-```
-usage: git-worklog abort [-h]
-
-Abort the current session.
-
-optional arguments:
-  -h, --help  show this help message and exit
-```
-
-```
-usage: git-worklog checkin [-h] [--time TIME]
-
-Checks you in to start a local time-tracking session.
-
-optional arguments:
-  -h, --help   show this help message and exit
-  --time TIME  Override check-in time.
-```
-
-```
-usage: git-worklog checkpoint [-h] [-m MESSAGE] [--time TIME]
-
-Commit a new log from the current session and start a new one.
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -m MESSAGE, --message MESSAGE
-                        A message for the log.
-  --time TIME           Override check-out and new check-in time.
-```
-
-```
-usage: git-worklog checkout [-h] [-m MESSAGE] [--time TIME]
-
-Checks you out an adds an entry to your timetable file in the worklog
-branch.
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -m MESSAGE, --message MESSAGE
-                        A message for the log.
-  --time TIME           Override check-out time.
-```
-
-```
-usage: git-worklog show [-h] [--user USER]
-
-Prints your timetable (or that of the specified user). The timetable is a TSV
-file with the three columns CHECKINTIME, CHECKOUTTIME and MESSAGE. All times
-have timezone information attached.
-
-optional arguments:
-  -h, --help   show this help message and exit
-  --user USER  User to retrieve the timetable for.
-```
-
-```
-usage: git-worklog status [-h]
-
-Displays your current session, that is the time passed since checkin or
-otherwise that there is no active time-tracking session.
-
-optional arguments:
-  -h, --help  show this help message and exit
-  -d, --detail
-```
