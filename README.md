@@ -69,7 +69,7 @@ See also: **Time Formats**
 A combination of `git worklog checkout` and `git worklog checkin`. The options
 are the same as for the `git worklog checkout` command.
 
-### `git worklog status`
+#### `git worklog status`
 
 Displays the current session's user and checkin time, as well as the time
 passed since checkin.
