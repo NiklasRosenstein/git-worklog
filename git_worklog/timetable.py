@@ -65,28 +65,40 @@ def splittimedelta(tdelta, components='DHMS'):
   return r
 
 
-def parse_time(value):
+def parse_time(value, dt=None):
   """
-  Parses a time string in multiple possible variants.
+  Parses a time string in multiple possible variants and otherwise applies
+  the defaults from *dt*. If *dt* is not specified, the result of #now() is
+  used.
   """
 
+  # Intentionally leaving out microseconds.
+  fields = ['year', 'month', 'day', 'hour', 'minute', 'second', 'tzinfo']
   formats = [
-    time_fmt,
-    '%H:%M',
-    '%H:%M:%S',
-    '%H-%M',
-    '%H-%M-%S',
-    '%d/%H:%M',
-    '%d/%H:%M:%S',
-    '%m/%d/%H:%M',
-    '%m/%d/%H:%M:%S'
+    (time_fmt, []),
+    ('%H:%M', ['hour', 'minute']),
+    ('%H:%M:%S', ['hour', 'minute', 'second']),
+    ('%H-%M', ['hour', 'minute']),
+    ('%H-%M-%S', ['hour', 'minute', 'second']),
+    ('%d/%H:%M', ['day', 'hour', 'minute']),
+    ('%d/%H:%M:%S', ['day', 'hour', 'minute', 'second']),
+    ('%m/%d/%H:%M', ['month', 'dat', 'hour', 'minute']),
+    ('%m/%d/%H:%M:%S', ['month', 'dat', 'hour', 'minute', 'second']),
   ]
-  for fmt in formats:
+  for fmt, filled_fields in formats:
     try:
-      return datetime.strptime(value, fmt)
+      result = datetime.strptime(value, fmt)
+      break
     except ValueError:
       pass
-  raise ValueError('invalid time string: {!r}'.format(value))
+  else:
+    raise ValueError('invalid time string: {!r}'.format(value))
+
+  # Update the values that haven't been parsed.
+  if dt is None:
+    dt = now()
+  kwargs = {k: getattr(dt, k) for k in fields if k not in filled_fields}
+  return result.replace(**kwargs)
 
 
 class NoCheckinAvailable(Exception):
