@@ -82,8 +82,10 @@ def parse_time(value, dt=None):
     ('%H-%M-%S', ['hour', 'minute', 'second']),
     ('%d/%H:%M', ['day', 'hour', 'minute']),
     ('%d/%H:%M:%S', ['day', 'hour', 'minute', 'second']),
-    ('%m/%d/%H:%M', ['month', 'dat', 'hour', 'minute']),
-    ('%m/%d/%H:%M:%S', ['month', 'dat', 'hour', 'minute', 'second']),
+    ('%d', ['day', '#0daytime']),
+    ('%d/%b', ['day', 'month', '#0daytime']),
+    ('%m/%d/%H:%M', ['month', 'day', 'hour', 'minute']),
+    ('%m/%d/%H:%M:%S', ['month', 'day', 'hour', 'minute', 'second']),
   ]
   for fmt, filled_fields in formats:
     try:
@@ -97,7 +99,13 @@ def parse_time(value, dt=None):
   # Update the values that haven't been parsed.
   if dt is None:
     dt = now()
+
   kwargs = {k: getattr(dt, k) for k in fields if k not in filled_fields}
+  if '#0daytime' in filled_fields:
+    kwargs['hour'] = 0
+    kwargs['minute'] = 0
+    kwargs['second'] = 0
+
   return result.replace(**kwargs)
 
 

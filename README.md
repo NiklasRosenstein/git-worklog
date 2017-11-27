@@ -14,6 +14,31 @@ Track work times in the `worklog` branch or in a separate repository.
   is commited to. This is only used when `worklog.repository` is *not* set.
   The default for this option is `worklog`.
 
+### Time Formats
+
+Git-worklog uses `%d/%b/%Y:%H:%M:%S %z` time format in the work log files.
+However, some commands support one or more time options and typing a date in
+the full time format is inconvenient, to say it frankly. Thus, these parameters
+support the following time formats and will fill in the rest with the current
+date and time.
+
+See also: `git_worklog/timetable.py:parse_time()`
+
+* `%H:%M`
+* `%H:%M:%S`
+* `%H-%M`
+* `%H-%M-%S`
+* `%d/%H:%M`
+* `%d/%H:%M:%S`
+* `%d` <sup>(1)</sup>
+* `%d/%b` <sup>(1)</sup>
+* `%m/%d/%H:%M`
+* `%m/%d/%H:%M:%S`
+
+<sup>(1)</sup> When using this time format, the daytime information will be
+zeroed. Eg. `25/Nov` specifies the 25th of November in the current year at
+0am.
+
 ### Synopsis
 
 ```
